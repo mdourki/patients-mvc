@@ -2,10 +2,13 @@ package com.dourki.patientsmvc;
 
 import com.dourki.patientsmvc.entities.Patient;
 import com.dourki.patientsmvc.repositories.PatientRepository;
+import com.dourki.patientsmvc.sec.service.SecurityService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
@@ -28,5 +31,25 @@ public class PatientsMvcApplication {
                 System.out.println(p.getNom());
             });
         };
+    }
+
+    //@Bean
+    CommandLineRunner saveUsers(SecurityService securityService){
+        return args -> {
+            securityService.saveNewUser("Simo","1234","1234");
+            securityService.saveNewUser("Mohamed","1234","1234");
+
+            securityService.saveNewRole("USER", "Utilisateur");
+            securityService.saveNewRole("ADMIN", "Administrateur");
+
+            securityService.addRoleToUser("Simo" , "USER");
+            securityService.addRoleToUser("Simo" , "ADMIN");
+            securityService.addRoleToUser("Mohamed" , "USER");
+        };
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }
